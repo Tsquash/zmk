@@ -1,0 +1,25 @@
+/ {
+	teton_col: connector_col {
+		compatible = "teton";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map
+			= <0 0 &gpio1 2 0>		/* COL0 */
+			, <1 0 &gpio0 3 0>		/* COL1 */
+			, <2 0 &gpio0 5 0>		/* COL2 */
+			;
+	};
+
+	teton_row: connector_row {
+		compatible = "postage-board";
+		#gpio-cells = <2>;
+		gpio-map-mask = <0xffffffff 0xffffffc0>;
+		gpio-map-pass-thru = <0 0x3f>;
+		gpio-map
+			= <0 0 &gpio1 15 0>	/* ROW0 */
+			;
+	};
+};
+
+ 
