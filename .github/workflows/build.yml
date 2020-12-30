@@ -54,6 +54,8 @@ jobs:
           - splitreus62_left
           - splitreus62_right
           - tg4x
+          - tidbit
+        cmake-args: [""]
         include:
           - board: dz60rgb_rev1
           - board: nrf52840_m2
@@ -61,6 +63,14 @@ jobs:
           - board: planck_rev6
           - board: proton_c
             shield: clueboard_california
+          - board: nice_nano
+            shield: kyria_left
+            cmake-args: -DCONFIG_ZMK_DISPLAY=y
+            skip-archive: true
+          - board: nice_nano
+            shield: kyria_right
+            cmake-args: -DCONFIG_ZMK_DISPLAY=y
+            skip-archive: true
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -81,11 +91,11 @@ jobs:
             4-${{ runner.os }}-
         timeout-minutes: 2
         continue-on-error: true
-      - name: West init
+      - name: Initialize workspace (west init)
         run: west init -l app
-      - name: West update
+      - name: Update modules (west update)
         run: west update
-      - name: West Zephyr export
+      - name: Export Zephyr CMake package (west zephyr-export)
         run: west zephyr-export
       - name: Prepare variables
         id: variables
@@ -102,12 +112,14 @@ jobs:
 
           echo ::set-output name=shield-arg::${SHIELD_ARG}
           echo ::set-output name=artifact-name::${ARTIFACT_NAME}
-      - name: West build
-        run: west build -s app -b ${{ matrix.board }} -- ${{ steps.variables.outputs.shield-arg }}
-      - name: Archive build
+      - name: Build (west build)
+        run: west build -s app -b ${{ matrix.board }} -- ${{ steps.variables.outputs.shield-arg }} ${{ matrix.cmake-args }}
+      - name: Archive artifacts
+        if: ${{ !matrix.skip-archive }}
         uses: actions/upload-artifact@v2
         with:
           name: "${{ steps.variables.outputs.artifact-name }}"
           path: |
             build/zephyr/zmk.hex
             build/zephyr/zmk.uf2
+        continue-on-error: true
