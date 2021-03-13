@@ -1,0 +1,8 @@
+# Copyright (c) 2021 The ZMK Contributers
+# SPDX-License-Identifier: MIT
+
+config SHIELD_TWOYO_LEFT
+	def_bool $(shields_list_contains,twoyo_left)
+
+config SHIELD_TWOYO_RIGHT
+	def_bool $(shields_list_contains,twoyo_right)

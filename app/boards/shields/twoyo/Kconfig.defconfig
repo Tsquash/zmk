@@ -1,0 +1,25 @@
+
+if SHIELD_TWOYO_LEFT
+
+config ZMK_KEYBOARD_NAME
+	default "twoyo Left"
+
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
+endif
+
+if SHIELD_TWOYO_RIGHT
+
+config ZMK_KEYBOARD_NAME
+	default "twoyo Right"
+
+endif
+
+if SHIELD_TWOYO_LEFT || SHIELD_TWOYO_RIGHT
+
+config ZMK_SPLIT
+	default y
+
+endif
+

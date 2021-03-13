@@ -1,0 +1,37 @@
+/*
+ * Copyright (c) 2021 The ZMK Contributers
+ *
+ * SPDX-License-Identifier: MIT
+ */
+
+#include "twoyo.dtsi"
+
+/ {
+    kscan0: kscan {
+        compatible = "zmk,kscan-gpio-matrix";
+        label = "KSCAN";
+        diode-direction = "col2row";
+
+
+        col-gpios
+            = <&pro_micro_d 2 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_d 10 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_d 16 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_d 14 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_d 15 GPIO_ACTIVE_HIGH>
+            , <&pro_micro_a 0 GPIO_ACTIVE_HIGH>
+            ;
+
+        row-gpios
+            = <&pro_micro_a 1 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_d 5 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_d 4 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            , <&pro_micro_d 3 (GPIO_ACTIVE_HIGH | GPIO_PULL_DOWN)>
+            ;
+    };
+};
+
+&left_encoder {
+	status = "okay";
+};
+
