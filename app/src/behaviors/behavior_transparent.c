@@ -15,19 +15,18 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
-struct behavior_transparent_config {};
-struct behavior_transparent_data {};
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
 
 static int behavior_transparent_init(const struct device *dev) { return 0; };
 
 static int on_keymap_binding_pressed(struct zmk_behavior_binding *binding,
                                      struct zmk_behavior_binding_event event) {
-    return 1;
+    return ZMK_BEHAVIOR_TRANSPARENT;
 }
 
 static int on_keymap_binding_released(struct zmk_behavior_binding *binding,
                                       struct zmk_behavior_binding_event event) {
-    return 1;
+    return ZMK_BEHAVIOR_TRANSPARENT;
 }
 
 static const struct behavior_driver_api behavior_transparent_driver_api = {
@@ -35,10 +34,8 @@ static const struct behavior_driver_api behavior_transparent_driver_api = {
     .binding_released = on_keymap_binding_released,
 };
 
-static const struct behavior_transparent_config behavior_transparent_config = {};
+DEVICE_AND_API_INIT(behavior_transparent, DT_INST_LABEL(0), behavior_transparent_init, NULL, NULL,
+                    APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
+                    &behavior_transparent_driver_api);
 
-static struct behavior_transparent_data behavior_transparent_data;
-
-DEVICE_AND_API_INIT(behavior_transparent, DT_INST_LABEL(0), behavior_transparent_init,
-                    &behavior_transparent_data, &behavior_transparent_config, APPLICATION,
-                    CONFIG_KERNEL_INIT_PRIORITY_DEFAULT, &behavior_transparent_driver_api);
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

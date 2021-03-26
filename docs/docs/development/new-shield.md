@@ -91,6 +91,9 @@ endif
 ```
 
 Similarly to defining the halves of a split board in `Kconfig.shield` it is important to set the `ZMK_KEYBOARD_NAME` for each half of a split keyboard.
+You'll also want to set which half is the central side. Most boards set it to the left.
+Then on the peripheral half, you'll want to turn USB on so that it shows USB status on displays properly.
+Finally, you'll want to turn on the split option for both sides. This can all be seen below.
 
 ```
 if SHIELD_MY_BOARD_LEFT
@@ -98,12 +101,22 @@ if SHIELD_MY_BOARD_LEFT
 config ZMK_KEYBOARD_NAME
 	default "My Awesome Keyboard Left"
 
+config ZMK_SPLIT_BLE_ROLE_CENTRAL
+	default y
+
 endif
 
 if SHIELD_MY_BOARD_RIGHT
 
 config ZMK_KEYBOARD_NAME
 	default "My Awesome Keyboard Right"
+
+endif
+
+if SHIELD_MY_BOARD_LEFT || SHIELD_MY_BOARD_RIGHT
+
+config ZMK_SPLIT
+	default y
 
 endif
 ```
@@ -203,6 +216,7 @@ RC(3,0) RC(3,1) RC(3,2) RC(3,3) RC(3,4) RC(3,5) RC(4,2) RC(4,9) RC(3,6) RC(3,7) 
 			;
 
 	};
+};
 ```
 
 :::note
@@ -264,24 +278,7 @@ For example, a split board called `my_awesome_split_board` would have the follow
 - `my_awesome_split_board_left.conf` - Configuration elements only affect left half
 - `my_awesome_split_board_right.conf` - Configuration elements only affect right half
 
-For proper communication between keyboard halves and that between the central half and the computer,
-the **the central and peripheral halves of the keyboard must be defined**. This can be seen below.
-
-```
-// Central Half (Usually the left side: my_awesome_split_board_left.conf)
-
-CONFIG_ZMK_SPLIT=y
-CONFIG_ZMK_SPLIT_BLE_ROLE_CENTRAL=y
-```
-
-```
-// Peripheral Half (Usually the right side: my_awesome_split_board_right.conf)
-
-CONFIG_ZMK_SPLIT=y
-CONFIG_ZMK_SPLIT_BLE_ROLE_Peripheral=y
-```
-
-Using the .conf file that affects both halves of a split board would be for adding features like deep-sleep or rotary encoders.
+In most case you'll only need to use the .conf file that affects both halves of a split board. It's used for adding features like deep-sleep or rotary encoders.
 
 ```
 // my_awesome_split_board.conf
@@ -466,11 +463,21 @@ you should be able to test with a build command like:
 west build --pristine -b proton_c -- -DSHIELD=my_board
 ```
 
-and then flash with:
+The above build command generates `build/zephyr/zmk.uf2`. If your board
+supports USB Flashing Format (UF2), copy that file onto the root of the USB mass
+storage device for your board. The controller should flash your built firmware
+and automatically restart once flashing is complete.
+
+Alternatively, if your board supports flashing and you're not developing from
+within a Dockerized environment, enable Device Firmware Upgrade (DFU) mode on
+your board and run the following command to test your build:
 
 ```
 west flash
 ```
+
+Please have a look at documentation specific to
+[building and flashing](build-flash) for additional information.
 
 :::note
 Further testing your keyboard shield without altering the root keymap file can be done with the use of `-DZMK_CONFIG` in your `west build` command,

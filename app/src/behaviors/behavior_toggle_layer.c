@@ -15,6 +15,8 @@
 
 LOG_MODULE_DECLARE(zmk, CONFIG_ZMK_LOG_LEVEL);
 
+#if DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT)
+
 struct behavior_tog_config {};
 struct behavior_tog_data {};
 
@@ -29,7 +31,7 @@ static int tog_keymap_binding_pressed(struct zmk_behavior_binding *binding,
 static int tog_keymap_binding_released(struct zmk_behavior_binding *binding,
                                        struct zmk_behavior_binding_event event) {
     LOG_DBG("position %d layer %d", event.position, binding->param1);
-    return 0;
+    return ZMK_BEHAVIOR_OPAQUE;
 }
 
 static const struct behavior_driver_api behavior_tog_driver_api = {
@@ -44,3 +46,5 @@ static struct behavior_tog_data behavior_tog_data;
 DEVICE_AND_API_INIT(behavior_tog, DT_INST_LABEL(0), behavior_tog_init, &behavior_tog_data,
                     &behavior_tog_config, APPLICATION, CONFIG_KERNEL_INIT_PRIORITY_DEFAULT,
                     &behavior_tog_driver_api);
+
+#endif /* DT_HAS_COMPAT_STATUS_OKAY(DT_DRV_COMPAT) */

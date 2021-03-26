@@ -12,4 +12,6 @@ properties:
     type: phandles
     required: true
   release-after-ms:
-    type: int 
+    type: int
+  quick-release:
+    type: boolean
